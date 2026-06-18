@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ugo Muller × Wiz — June 19, 2026</title>
+<title>Ugo Muller × Wiz - June 19, 2026</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
 
@@ -271,6 +271,12 @@
     width: 100%;
     font-family: inherit;
     cursor: text;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.5;
+    word-break: break-word;
+    min-height: 24px;
+    padding: 0;
   }
 
   .agenda-text:focus { color: var(--blue); }
@@ -618,7 +624,8 @@
     .who-layout { grid-template-columns: 1fr; }
     .deals-grid { grid-template-columns: 1fr; }
     .expectations-grid { grid-template-columns: 1fr; }
-    .agenda-item { grid-template-columns: 50px 1fr auto; }
+    .agenda-item { grid-template-columns: 40px 1fr; grid-template-rows: auto auto; gap: 8px 12px; align-items: start; }
+    .agenda-duration { grid-column: 2; }
     .wiz-event { grid-template-columns: 100px 40px 1fr; }
   }
 
@@ -647,7 +654,7 @@
     <li><a href="#who">About</a></li>
     <li><a href="#expectations">Expectations</a></li>
   </ul>
-  <span class="nav-badge">June 19, 2026 · Axel × Ugo</span>
+  <span class="nav-badge">June 18, 2026 · Axel × Ugo</span>
 </nav>
 
 <main>
@@ -666,7 +673,7 @@
 <!-- AGENDA -->
 <section class="section" id="agenda">
   <div class="section-eyebrow">Agenda</div>
-  <h2 class="section-title reveal">Our meeting on <span class="gradient-text">June 18</span></h2>
+  <h2 class="section-title reveal">Agenda proposition for our <span class="gradient-text">meeting today</span></h2>
   <div class="agenda-grid reveal" id="agenda-list"></div>
   <button class="agenda-add" id="agenda-add-btn" onclick="addAgendaItem()">+ Add an item</button>
   <p class="agenda-note">💡 Click on any item to edit it, adjust duration on the right, delete with ×</p>
@@ -700,7 +707,7 @@
     </div>
     <div class="why-card">
       <span class="why-icon">📈</span>
-      <div class="why-title">Top performer — but not only</div>
+      <div class="why-title">Top performer - but not only</div>
       <div class="why-desc">I've been a top performer and I've also had rough patches. Both taught me different things.</div>
     </div>
     <div class="why-card">
@@ -711,7 +718,7 @@
     <div class="why-card">
       <span class="why-icon">⚽</span>
       <div class="why-title">From Marseille. Not that much of a fan.</div>
-      <div class="why-desc">I'm from Marseille and I love football — but not enough to hate PSG.</div>
+      <div class="why-desc">I'm from Marseille and I love football - but not enough to hate PSG.</div>
     </div>
   </div>
 </section>
@@ -829,7 +836,7 @@
   <div class="expectations-grid reveal">
     <div class="expectation-card">
       <div class="expectation-num">01</div>
-      <div class="expectation-text">Get to know who you are, Axel — the Regional Director, but also the person. What drives you, what bores you, what you celebrate.</div>
+      <div class="expectation-text">Get to know who you are, Axel - the Regional Director, but also the person. What drives you, what bores you, what you celebrate.</div>
     </div>
     <div class="expectation-card">
       <div class="expectation-num">02</div>
@@ -929,12 +936,17 @@ revealEls.forEach(el => observer.observe(el));
 
 // AGENDA
 const agendaData = [
-  { text: "Introductions — who we are, background, context", duration: "10 min" },
-  { text: "Deep dive on experience — organization, deals, methodology, numbers", duration: "20 min" },
+  { text: "Introductions - who we are, background, context", duration: "10 min" },
+  { text: "Deep dive on experience - organization, deals, methodology, numbers", duration: "20 min" },
   { text: "Why Wiz is hiring now & what you expect from the next AE + Q&A on the role", duration: "10 min" },
   { text: "My motivations for joining Wiz & what I expect from a manager", duration: "10 min" },
   { text: "Next steps", duration: "10 min" },
 ];
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
 
 function renderAgenda() {
   const list = document.getElementById('agenda-list');
@@ -944,7 +956,7 @@ function renderAgenda() {
     el.className = 'agenda-item';
     el.innerHTML = `
       <span class="agenda-number">${String(i + 1).padStart(2, '0')}</span>
-      <input class="agenda-text" value="${item.text}" onblur="agendaData[${i}].text = this.value" />
+      <textarea class="agenda-text" rows="1" onblur="agendaData[${i}].text = this.value" oninput="autoResize(this)">${item.text}</textarea>
       <div class="agenda-duration">
         <input class="agenda-min" value="${item.duration}" onblur="agendaData[${i}].duration = this.value" />
         <button class="agenda-delete" onclick="deleteAgendaItem(${i})" title="Remove">×</button>
@@ -952,6 +964,8 @@ function renderAgenda() {
     `;
     list.appendChild(el);
   });
+  // Auto-resize all textareas after render
+  document.querySelectorAll('.agenda-text').forEach(autoResize);
 }
 
 function deleteAgendaItem(i) { agendaData.splice(i, 1); renderAgenda(); }
